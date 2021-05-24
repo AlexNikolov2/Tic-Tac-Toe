@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+ 
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Tic Tac Toe Game</title>
+<style>
+*{
+    box-sizing: border-box;
+    font-family: sans-serif;
+  }
+  body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #87c8d8;
+  }
+  .text-content{
+    position: relative;
+    top: -400px;
+    right: -210px;
+    text-align: center;
+    font-size: 30pt;
+    font-weight: bold;
+      
+  }
+  .container{
+    position: relative;
+    right: 280px;
+    width: 500px;
+    height: 500px;
+    display: grid;
+    background-color: #aedeeb;
+    grid-gap: 5px;
+    grid-template-columns: 33% 33% 33%;
+    grid-auto-rows: 33% 33% 33%;
+  }
+  .card{
+    position: relative;
+    background-color: #87c8d8;
+    cursor: pointer;
+  }
+  .card::before{
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 8rem;
+  }
+  .card.x::before{
+    content: "X";
+  }
+  .card.o::before{
+    content: "O";
+  }
+  .winner{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    width: 400px;
+    height: 200px;
+    padding: 20px 40px;
+    background-color: #fff;
+    font-size: 2rem;
+    border-radius: 20px;
+    text-align: center;
+    animation: animate .5s linear;
+  }
+  @keyframes animate{
+    from{
+      opacity: 0;
+    }
+    to{
+      opacity: 1;
+    }
+  }
+  .winner button{
+    margin-top: 20px;
+    width: 80px;
+    height: 35px;
+    line-height: 35px;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    border-radius: 20px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #87c8d8;
+  }
+</style>
+</head>
+ 
+<body>
+    <div class="text-content">
+    <p>Welcome to Tic-Tac-Toe!</p>
+    <p>Let's have a game!</p>
+</div>
+ 
+<div class="container">
+    <div class="card" data-index="1"></div>
+    <div class="card" data-index="2"></div>
+    <div class="card" data-index="3"></div>
+    <div class="card" data-index="4"></div>
+    <div class="card" data-index="5"></div>
+    <div class="card" data-index="6"></div>
+    <div class="card" data-index="7"></div>
+    <div class="card" data-index="8"></div>
+    <div class="card" data-index="9"></div>
+    
+  </div>
+ 
+</body>
+ 
+<script>
+const cards = Array.from(document.querySelectorAll(".card"));
+const winner = [[1,2,3],[4,5,6],[7,8,9],[1,5,9],[3,5,7],[1,4,7],[2,5,8],[3,6,9]];
+let p1 = [], p2 = [], counter = 0;
+
+function check(array){
+  let finalResult = false;
+  for(let item of winner){
+    let res = item.every(value => array.indexOf(value) !== -1);
+    if(res){
+      finalResult = true;
+      break;
+    }
+  }
+  return finalResult;
+}
+
+function winnerPlayer(p){
+  const divElement = document.createElement("div");
+  const player = document.createTextNode(p);
+  const replay = document.createElement("button");
+  divElement.classList.add("winner");
+  divElement.appendChild(player);
+  replay.appendChild(document.createTextNode("Replay"));
+  replay.onclick = () => { replayFunc() };
+  divElement.appendChild(replay);
+  document.body.appendChild(divElement);
+}
+
+function gameResult(){
+  if(this.classList == "card"){
+    counter++;
+    if(counter%2 !== 0){
+      this.classList.add("x");
+      p1.push(Number(this.dataset.index));
+      if(check(p1)){        
+        winnerPlayer("Congrats player one you win");
+        return true;
+      }
+    } else{
+      this.classList.add("o");
+      p2.push(Number(this.dataset.index));
+      if(check(p2)){
+        winnerPlayer("Congrats player two you win");
+        return true;
+      }
+    }
+    if(counter === 9){
+      winnerPlayer("Draw");
+    }
+  }
+}
+
+function replayFunc(){
+  const win = document.querySelector(".winner");
+  p1 = [];
+  p2 = [];
+  counter = 0;
+  win.remove();
+  [].forEach.call(cards, function(element) {
+    element.classList.remove("x");
+	  element.classList.remove("o");
+  });
+ 
+ 
+}
+cards.forEach(card => card.addEventListener("click", gameResult));
+ 
+</script>
+</html>
